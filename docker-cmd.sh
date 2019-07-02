@@ -2,6 +2,7 @@
 NOW=$(date +"%Y-%m-%d %H:%M:%S")
 OPT=$1
 
+mkdir -p "$PWD/logs/"
 
 case $OPT in
 	-install|-i)
