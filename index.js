@@ -3,7 +3,7 @@ import Datastore from "nedb";
 import config from "./config";
 
 const STAGE_API = "https://api.stages-aikido.fr";
-const FCM_API = "https://utils.jbehuet.fr/messaging";
+const FCM_API = "https://utils.jbehuet.fr/messaging/notify/";
 
 const SUBSCRIPTIONS_DS = new Datastore({
   filename: config.SUBSCRIPTIONS_DB_PATH
@@ -27,6 +27,11 @@ async function main() {
 
   // Find all subscription for application === 'kihon'
   SUBSCRIPTIONS_DS.find({ application: "kihon" }, (err, subscriptions) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+
     Promise.all(
       subscriptions.map(subscription => {
         axios.post(
@@ -35,16 +40,16 @@ async function main() {
             title: "Aikido - Stages",
             body: `Cette semaine il y a ${
               TRAININGSHIPS[subscription.data.region].length
-            } stages ${REGIONS[subscription.data.region]}`
+            } stages en ${REGIONS[subscription.data.region]}`
           }
         );
       })
     )
       .then(() => {
-        console.log(`${subscriptions} subscriptions sent`);
+        console.log(`${subscriptions.length} subscriptions sent`);
       })
       .catch(err => {
-        console.err(err);
+        console.error(err);
       });
   });
 }
