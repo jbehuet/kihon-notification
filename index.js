@@ -3,7 +3,7 @@ import Datastore from "nedb";
 import config from "./config";
 
 const STAGE_API = "https://api.stages-aikido.fr";
-const FCM_API = "https://utils.jbehuet.fr/messaging/notify/";
+const FCM_API = "https://utils.jbehuet.fr/messaging/notify";
 
 const SUBSCRIPTIONS_DS = new Datastore({
   filename: config.SUBSCRIPTIONS_DB_PATH
