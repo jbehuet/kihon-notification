@@ -2,6 +2,7 @@ import axios from "axios";
 import Datastore from "nedb";
 import config from "./config";
 
+const PERF_REGION = "REGION_";
 const STAGE_API = "https://api.stages-aikido.fr";
 const FCM_API = "https://utils.jbehuet.fr/messaging/notify";
 
@@ -15,11 +16,15 @@ async function main() {
 
   if (REGIONS.length === 0) return;
 
-  const TRAININGSHIPS = await Promise.all(
+  const TRAININGSHIPS = (await Promise.all(
     Object.keys(REGIONS).map(region => getTrainingships(region))
-  );
+  )).reduce((prev, curr) => {
+    const key = Object.keys(curr)[0];
+    prev[key] = curr[key];
+    return prev;
+  }, {});
 
-  if (TRAININGSHIPS.length === 0) return;
+  if (Object.keys(TRAININGSHIPS).length === 0) return;
 
   // Find all subscription for application === 'kihon'
   SUBSCRIPTIONS_DS.find({ application: "kihon" }, (err, subscriptions) => {
@@ -66,7 +71,7 @@ async function getTrainingships(region) {
   try {
     const res = await axios.get(`${STAGE_API}/stages?region=${region}`);
     const trainingships = {};
-    trainingships[region] = res.data.stages;
+    trainingships[`${PERF_REGION}${region}`] = res.data.stages;
     return trainingships;
   } catch (err) {
     console.error(err);
