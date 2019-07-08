@@ -15,12 +15,8 @@ async function main() {
 
   if (REGIONS.length === 0) return;
 
-  const TRAININGSHIPS = await Object.keys(REGIONS).reduce(
-    async (prev, region) => {
-      prev[region] = await getTrainingships(region);
-      return prev;
-    },
-    {}
+  const TRAININGSHIPS = await Promise.all(
+    Object.keys(REGIONS).map(region => getTrainingships(region))
   );
 
   if (TRAININGSHIPS.length === 0) return;
@@ -69,7 +65,9 @@ async function getAllRegions() {
 async function getTrainingships(region) {
   try {
     const res = await axios.get(`${STAGE_API}/stages?region=${region}`);
-    return res.data.stages;
+    const trainingships = {};
+    trainingships[region] = res.data.stages;
+    return trainingships;
   } catch (err) {
     console.error(err);
     return [];
