@@ -2,7 +2,7 @@ import axios from "axios";
 import Datastore from "nedb";
 import config from "./config";
 
-const PERF_REGION = "REGION_";
+const PREFIX = "REGION_";
 const STAGE_API = "https://api.stages-aikido.fr";
 const FCM_API = "https://utils.jbehuet.fr/messaging/notify";
 
@@ -40,7 +40,7 @@ async function main() {
           {
             title: "Aikido - Stages",
             body: `Cette semaine il y a ${
-              TRAININGSHIPS[subscription.data.region].length
+              TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length
             } stages en ${REGIONS[subscription.data.region]}`
           }
         );
@@ -71,7 +71,7 @@ async function getTrainingships(region) {
   try {
     const res = await axios.get(`${STAGE_API}/stages?region=${region}`);
     const trainingships = {};
-    trainingships[`${PERF_REGION}${region}`] = res.data.stages;
+    trainingships[`${PREFIX}${region}`] = res.data.stages;
     return trainingships;
   } catch (err) {
     console.error(err);
