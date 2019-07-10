@@ -1,5 +1,6 @@
 import axios from "axios";
 import Datastore from "nedb";
+import { isBefore } from "date-fns";
 import config from "./config";
 
 const PREFIX = "REGION_";
@@ -69,9 +70,15 @@ async function getAllRegions() {
 // Get trainingships by region
 async function getTrainingships(region) {
   try {
+    const dateEndOfWeek = new Date();
+    dateEndOfWeek.setDate(dateEndOfWeek.getDate() + 8);
+
     const res = await axios.get(`${STAGE_API}/stages?region=${region}`);
     const trainingships = {};
-    trainingships[`${PREFIX}${region}`] = res.data.stages;
+    trainingships[`${PREFIX}${region}`] = res.data.stages.filter(s => {
+      const [day, month, year] = s.dateFin.split("/");
+      return isBefore(new Date(year, month - 1, day), dateEndOfWeek);
+    });
     return trainingships;
   } catch (err) {
     console.error(err);
