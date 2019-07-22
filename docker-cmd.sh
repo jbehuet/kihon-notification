@@ -1,21 +1,22 @@
 #!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 NOW=$(date +"%Y-%m-%d %H:%M:%S")
 OPT=$1
 
-mkdir -p "$PWD/logs/"
+mkdir -p "$DIR/logs/"
 
 case $OPT in
 	-install|-i)
 		docker run --rm \
-			-v $PWD:/app \
+			-v $DIR:/app \
 			-w /app node:alpine npm install \
-			>> "$PWD/logs/$NOW";;
+			>> "$DIR/logs/$NOW";;
 	-run|-r)
 		docker run --rm \
-			-v $PWD:/app \
+			-v $DIR:/app \
 			-v /data/nedb:/data/nedb  \
 			-w /app node:alpine npx babel-node --presets es2015,stage-2 /app/index.js \
-			>> "$PWD/logs/$NOW";;
+			>> "$DIR/logs/$NOW";;
 	*)
 		echo "Bad argument!" 
 		echo "Usage: $0 -i"
