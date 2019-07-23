@@ -41,13 +41,7 @@ async function main() {
             TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length > 0
         )
         .map(subscription => {
-          console.log(
-            `Send message to ${subscription.token} ( ${
-              REGIONS[subscription.data.region]
-            } - ${
-              TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length
-            })`
-          );
+          console.log(`Send message to ${subscription.token}`);
           axios.post(
             `${FCM_API}/${subscription.application}/${subscription.token}`,
             {
