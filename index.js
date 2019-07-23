@@ -34,15 +34,20 @@ async function main() {
       return;
     }
 
-    // Filter empty traininship in region
-    subscriptions = subscriptions.filter(
-      subscription =>
-        TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length > 0
-    );
-
     Promise.all(
       subscriptions
+        .filter(
+          subscription =>
+            TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length > 0
+        )
         .map(subscription => {
+          console.log(
+            `Send message to ${subscriptions.token} ( ${
+              REGIONS[subscription.data.region]
+            } - ${
+              TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length
+            })`
+          );
           axios.post(
             `${FCM_API}/${subscription.application}/${subscription.token}`,
             {
