@@ -35,7 +35,9 @@ async function main() {
     }
 
     Promise.all(
-      subscriptions.map(subscription => {
+      subscriptions
+      .filter(subscription => TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length > 0)
+      .map(subscription => {
         axios.post(
           `${FCM_API}/${subscription.application}/${subscription.token}`,
           {
