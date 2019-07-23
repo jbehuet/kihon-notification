@@ -42,7 +42,7 @@ async function main() {
         )
         .map(subscription => {
           console.log(
-            `Send message to ${subscriptions.token} ( ${
+            `Send message to ${subscription.token} ( ${
               REGIONS[subscription.data.region]
             } - ${
               TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length
