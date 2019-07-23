@@ -34,20 +34,25 @@ async function main() {
       return;
     }
 
+    // Filter empty traininship in region
+    subscriptions = subscriptions.filter(
+      subscription =>
+        TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length > 0
+    );
+
     Promise.all(
       subscriptions
-      .filter(subscription => TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length > 0)
-      .map(subscription => {
-        axios.post(
-          `${FCM_API}/${subscription.application}/${subscription.token}`,
-          {
-            title: "Aikido - Stages",
-            body: `Cette semaine il y a ${
-              TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length
-            } stages en ${REGIONS[subscription.data.region]}`
-          }
-        );
-      })
+        .map(subscription => {
+          axios.post(
+            `${FCM_API}/${subscription.application}/${subscription.token}`,
+            {
+              title: "Aikido - Stages",
+              body: `Cette semaine il y a ${
+                TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length
+              } stages en ${REGIONS[subscription.data.region]}`
+            }
+          );
+        })
     )
       .then(() => {
         console.log(`${subscriptions.length} subscriptions sent`);
