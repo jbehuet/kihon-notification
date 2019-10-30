@@ -42,15 +42,22 @@ async function main() {
         )
         .map(subscription => {
           console.log(`Send message to ${subscription.token}`);
-          axios.post(
-            `${FCM_API}/${subscription.application}/${subscription.token}`,
-            {
-              title: "Aikido - Stages",
-              body: `Cette semaine il y a ${
-                TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length
-              } stages en ${REGIONS[subscription.data.region]}`
-            }
-          );
+          return new Promise(resolve => {
+            axios.post(
+              `${FCM_API}/${subscription.application}/${subscription.token}`,
+              {
+                title: "Aikido - Stages",
+                body: `Cette semaine il y a ${
+                  TRAININGSHIPS[`${PREFIX}${subscription.data.region}`].length
+                  } stages en ${REGIONS[subscription.data.region]}`
+              }
+            )
+              .then(() => resolve())
+              .catch((e) => {
+                console.log(e)
+                resolve()
+              })
+          })
         })
     )
       .then(() => {
